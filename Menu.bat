@@ -2,7 +2,7 @@ echo off
 title MinecraftAssetsAdder - Menu
 cls
 set WorkingDir=cd
-set mcdir=%appdata%/.minecraft/versions/
+set mcdir=%appdata%\.minecraft
 
 :MENU
 echo Select one of this
@@ -20,7 +20,7 @@ IF %M%==3 GOTO EXIT
 title MinecraftAssetsAdder - Menu - Setup
 echo setup MODE
 SET /P "M1=Specific Minecraft Versions Directory or type DEFAULT:  " 
-IF /I %M1%==DEFAULT (set mcdir=%appdata%/.minecraft/versions) ELSE (set mcdir=%M1%)
+IF /I %M1%==DEFAULT (set mcdir=%appdata%\.minecraft\versions) ELSE (set mcdir=%M1%)
 
 echo Default mc version dir is %mcdir%
 
@@ -60,7 +60,7 @@ set /p Version=Version:
 :MAKE
 title MinecraftAssetsAdder - Menu - Create - Make %Name%
 
-IF %M2%==A ECHO %mcdir%/%Version%/%Version%.jar %tmp%/%Version%/%Version%.zip & copy %mcdir%/%Version%/%Version%.jar %tmp%/%Version%/%Version%.zip & powershell Expand-Archive -LiteralPath "%tmp%\%Version%\%Version%.zip" -DestinationPath "%tmp%\%Version%" -Force
+IF %M2%==A dir & mkdir %tmp%\%Version% & echo %mcdir%\versions\%Version%\%Version%.jar & copy %mcdir%\versions\%Version%\%Version%.jar %tmp%\%Version%\%Version%.zip & powershell Expand-Archive -LiteralPath "%tmp%\%Version%\%Version%.zip" -DestinationPath "%tmp%\%Version%" -Force & robocopy %tmp%\%Version%\assets .\assets\ /e  
 IF %M2%==a echo Default Textures
 IF %M2%==B echo Empty template selected...
 IF %M2%==b echo Empty template selected...
@@ -78,8 +78,8 @@ echo }
 )>pack.mcmeta
 echo pack.mcmeta created
 pause 2
-if 
-CLS
+
+cls			
 cd ../..
 copy pack.png .\Output\%Name%
 cd Output\%Name%
@@ -140,7 +140,14 @@ ECHO WHAT NEXT ?
 PAUSE
 title MinecraftAssetsAdder - Menu - Create - Compile %Name%
 ECHO Compile time
-powershell Compress-Archive . ../%Name%-%Version%.zip
+powershell Compress-Archive ./* ../%Name%-%Version%.zip
+
+set /p CpRp=Do you want copy %Name%-%Version%.zip to yours Minecraft ? (y/n):
+IF %CpRp%==y dir & pause 10 &cd .. & dir & echo %mcdir%\resourcepacks & copy %Name%-%Version%.zip %mcdir%\resourcepacks & echo Enjoy RP & pause 3 & GOTO MENU
+IF %CpRp%==Y dir & pause 10 &cd .. & dir & echo %mcdir%\resourcepacks & copy %Name%-%Version%.zip %mcdir%\resourcepacks & echo Enjoy RP & pause 3 & GOTO MENU 
+IF %CpRp%==n GOTO MENU
+IF %CpRp%==N GOTO MENU
+
 
 GOTO MENU
 
