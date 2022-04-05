@@ -5,13 +5,20 @@ set WorkingDir=cd
 set mcdir=%appdata%\.minecraft
 
 :MENU
-echo Select one of this
-echo 1.setup
-ECHO 2.create
-echo 3.exit
 
+echo ########################
+echo )Minecraft Assets Adder(
+echo )          b y         (
+echo )       ArastaD0t      (
+echo ########################
+echo )_Select__one__of_this_(
+echo ------------------------
+echo )        1.setup       (
+ECHO )        2.create      (
+echo )        3.exit        (
+echo ------------------------
 
-SET /P M=Type 1, 2, 3, or 4 then press ENTER:
+SET /P M=Select (1/2/3) then press ENTER:
 IF %M%==1 GOTO SETUP
 IF %M%==2 GOTO CREATE
 IF %M%==3 GOTO EXIT
@@ -35,35 +42,89 @@ set /p Name=NameOfRP:
 title MinecraftAssetsAdder - Menu - Create %Name%
 mkdir Output\%Name%
 cd Output\%Name%
-SET /p M2=A.DefaultTextures B.BlankTemplate  
-IF %M2%==A echo Default Textures
-IF %M2%==a echo Default Textures
-IF %M2%==B echo Empty template selected...
-IF %M2%==b echo Empty template selected...
+SET /p M2=Select (A.DefaultTextures/B.BlankTemplate)  
+IF %M2%==A echo )SELECTED(Default Textures
+IF %M2%==a echo )SELECTED(Default Textures
+IF %M2%==B echo )SELECTED(Empty template
+IF %M2%==b echo )SELECTED(Empty template
 
-echo Select version
-echo example 1.7 , 1.8, 1.9,.....
+GOTO VERSIONS
+
+
+:VERSIONS
+echo )Select version(
+echo you can select from 1.7.2 ~ 1.14.4
 set /p Version=Version: 
-IF %Version%==1.7 SET For=1 & GOTO MAKE
+
+:: 1.7.X:: VERSION:: MAPPING:: 
+IF %Version%==1.7.2 SET For=1 & GOTO MAKE
+IF %Version%==1.7.4 SET For=1 & GOTO MAKE
+IF %Version%==1.7.5 SET For=1 & GOTO MAKE
+IF %Version%==1.7.6 SET For=1 & GOTO MAKE
+IF %Version%==1.7.7 SET For=1 & GOTO MAKE
+IF %Version%==1.7.8 SET For=1 & GOTO MAKE
+IF %Version%==1.7.9 SET For=1 & GOTO MAKE
+IF %Version%==1.7.10 SET For=1 & GOTO MAKE
+
+:: 1.8.X:: VERSION:: MAPPING:: 
 IF %Version%==1.8 SET For=1 & GOTO MAKE
+IF %Version%==1.8.1 SET For=1 & GOTO MAKE
+IF %Version%==1.8.2 SET For=1 & GOTO MAKE
+IF %Version%==1.8.3 SET For=1 & GOTO MAKE
+IF %Version%==1.8.4 SET For=1 & GOTO MAKE
+IF %Version%==1.8.5 SET For=1 & GOTO MAKE
+IF %Version%==1.8.6 SET For=1 & GOTO MAKE
+IF %Version%==1.8.7 SET For=1 & GOTO MAKE
+IF %Version%==1.8.8 SET For=1 & GOTO MAKE
+IF %Version%==1.8.9 SET For=1 & GOTO MAKE
+
+:: 1.9.X:: VERSION:: MAPPING:: 
 IF %Version%==1.9 SET For=2 & GOTO MAKE
+IF %Version%==1.9.1 SET For=2 & GOTO MAKE
+IF %Version%==1.9.2 SET For=2 & GOTO MAKE
+IF %Version%==1.9.3 SET For=2 & GOTO MAKE
+IF %Version%==1.9.4 SET For=2 & GOTO MAKE
+
+:: 1.10.X:: VERSION:: MAPPING:: 
 IF %Version%==1.10 SET For=2 & GOTO MAKE
+IF %Version%==1.10.1 SET For=2 & GOTO MAKE
+IF %Version%==1.10.2 SET For=2 & GOTO MAKE
+
+:: 1.11.X:: VERSION:: MAPPING:: 
 IF %Version%==1.11 SET For=3 & GOTO MAKE
+IF %Version%==1.11.1 SET For=3 & GOTO MAKE
+IF %Version%==1.11.2 SET For=3 & GOTO MAKE
+
+:: 1.12.X:: VERSION:: MAPPING:: 
 IF %Version%==1.12 SET For=3 & GOTO MAKE
+IF %Version%==1.12.1 SET For=3 & GOTO MAKE
+IF %Version%==1.12.2 SET For=3 & GOTO MAKE
+
+:: 1.13.X:: VERSION:: MAPPING:: 
 IF %Version%==1.13 SET For=4 & GOTO MAKE
+IF %Version%==1.13.1 SET For=4 & GOTO MAKE
+IF %Version%==1.13.2 SET For=4 & GOTO MAKE
+
+:: 1.14.X:: VERSION:: MAPPING:: 
 IF %Version%==1.14 SET For=4 & GOTO MAKE
-else 
-echo invalid or unsupported version
-echo example 1.7 , 1.8, 1.9,.....
+IF %Version%==1.14.1 SET For=4 & GOTO MAKE
+IF %Version%==1.14.2 SET For=4 & GOTO MAKE
+IF %Version%==1.14.3 SET For=4 & GOTO MAKE
+IF %Version%==1.14.4 SET For=4 & GOTO MAKE
+
+else goto WS
+:WS
+echo )SELECTED(invalid or unsupported version
+echo example 1.7.2 , 1.10.2, 1.14.1,.....
 set /p Version=Version: 
 
 :MAKE
 title MinecraftAssetsAdder - Menu - Create - Make %Name%
 
-IF %M2%==A dir & mkdir %tmp%\%Version% & echo %mcdir%\versions\%Version%\%Version%.jar & copy %mcdir%\versions\%Version%\%Version%.jar %tmp%\%Version%\%Version%.zip & powershell Expand-Archive -LiteralPath "%tmp%\%Version%\%Version%.zip" -DestinationPath "%tmp%\%Version%" -Force & robocopy %tmp%\%Version%\assets .\assets\ /e  
-IF %M2%==a echo Default Textures
-IF %M2%==B echo Empty template selected...
-IF %M2%==b echo Empty template selected...
+IF %M2%==A if exist %mcdir%\versions\%Version%\%Version%.jar (mkdir %tmp%\%Version% & copy %mcdir%\versions\%Version%\%Version%.jar %tmp%\%Version%\%Version%.zip & powershell Expand-Archive -LiteralPath "%tmp%\%Version%\%Version%.zip" -DestinationPath "%tmp%\%Version%" -Force & robocopy %tmp%\%Version%\assets .\assets\ /e) else (echo "Selected version not downloaded, please start your Minecraft with %Version% close Minecraft and try again..." & pause & goto MENU )
+IF %M2%==a if exist %mcdir%\versions\%Version%\%Version%.jar (mkdir %tmp%\%Version% & copy %mcdir%\versions\%Version%\%Version%.jar %tmp%\%Version%\%Version%.zip & powershell Expand-Archive -LiteralPath "%tmp%\%Version%\%Version%.zip" -DestinationPath "%tmp%\%Version%" -Force & robocopy %tmp%\%Version%\assets .\assets\ /e) else (echo "Selected version not downloaded, please start your Minecraft with %Version% close Minecraft and try again..." & pause & goto MENU )
+IF %M2%==B echo )SELECTED(Empty template
+IF %M2%==b echo )SELECTED(Empty template
 
 set /p Desc=Description:
 echo    "description": ""%Desc%""
