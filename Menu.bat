@@ -27,10 +27,22 @@ IF %M%==3 GOTO EXIT
 title MinecraftAssetsAdder - Menu - Setup
 echo setup MODE
 SET /P "M1=Specific Minecraft Versions Directory or type DEFAULT:  " 
-IF /I %M1%==DEFAULT (set mcdir=%appdata%\.minecraft\versions) ELSE (set mcdir=%M1%)
+IF /I %M1%==D (set mcdir=%appdata%\.minecraft\versions && echo mcdir=%appdata%\.minecraft\versions >> config. )
+IF /I %M1%==DEFAULT (set mcdir=%appdata%\.minecraft\versions && echo mcdir=%appdata%\.minecraft\versions >> config. ) ELSE (set mcdir=%M1% && echo mcdir=%M1% >> config.  )
 
-echo Default mc version dir is %mcdir%
+echo Default Texture Editor is %editor%
+SET /P "M1=Specific Path to Texture Editor EXE or type DEFAULT:  " 
+IF /I %M1%==D (set editor=mspaint && echo editor=mspaint >> config. )
+IF /I %M1%==DEFAULT (set editor=mspaint && echo editor=mspaint >> config. ) ELSE (set editor=%M1% && echo editor=%M1% > config.  )
 
+echo Include Minecraft Mods Resourcepacks to process ? %mods%
+SET /P "M1=Answare True False DEFAULT is always asking:  " 
+IF /I %M1%==D (set mods=prompt && echo mods=prompt >> config.  ) 
+IF /I %M1%==DEFAULT (set mods=Prompt && echo mods=Prompt% >> config.  ) 
+IF /I %M1%==T (set mods=True && echo mods=True >> config.  )
+IF /I %M1%==TRUE (set mods=True && echo mods=True >> config.  )
+IF /I %M1%==F (set mods=False && echo mods=False >> config.  )
+IF /I %M1%==FALSE (set mods=False && echo mods=False >> config.  )
 PAUSE 5
 
 
@@ -48,12 +60,19 @@ IF %M2%==a echo )SELECTED(Default Textures
 IF %M2%==B echo )SELECTED(Empty template
 IF %M2%==b echo )SELECTED(Empty template
 
-GOTO VERSIONS
 
+
+IF exist %mcdir%\mods (GOTO MODS) else GOTO VERSIONS
+
+:MODS
+title MinecraftAssetsAdder - Menu - Create - Make %Name% - Mods Founded
+SET /p M3=Founded Mods Folder, do you want include mods resourcespacks ? y/n :
+IF %M3%==n (GOTO VERSION)
+IF %M3%==y (echo Which Modes You want include ? (Write Modname.jar or all) && dir /B %mcdir%\mods\ && SET /P M4 && IF %M4%==all () else (mkdir %tmp%\mods && mkdir %tmp%\mods\extracted && mkdir %tmp%\mods\extracted\%M4% & copy %mcdir%\mods\%M4% %tmp%\mods\%M4%.zip & powershell Expand-Archive -LiteralPath "%tmp%\mods\%M4%.zip" -DestinationPath "%tmp%\mods\extracted\%M4%" -Force & robocopy %tmp%\mods\extracted\%M4%\assets .\assets\ /e) else ()& goto Make ) )
 
 :VERSIONS
 echo )Select version(
-echo you can select from 1.7.2 ~ 1.14.4
+dir /AD /B %mcdir%\versions\
 set /p Version=Version: 
 
 :: 1.7.X:: VERSION:: MAPPING:: 
@@ -67,7 +86,7 @@ IF %Version%==1.7.9 SET For=1 & GOTO MAKE
 IF %Version%==1.7.10 SET For=1 & GOTO MAKE
 
 :: 1.8.X:: VERSION:: MAPPING:: 
-IF %Version%==1.8 SET For=1 & GOTO MAKE
+IF %Version%==1.8 SET For=1 & GOTO MODS
 IF %Version%==1.8.1 SET For=1 & GOTO MAKE
 IF %Version%==1.8.2 SET For=1 & GOTO MAKE
 IF %Version%==1.8.3 SET For=1 & GOTO MAKE
@@ -112,10 +131,40 @@ IF %Version%==1.14.2 SET For=4 & GOTO MAKE
 IF %Version%==1.14.3 SET For=4 & GOTO MAKE
 IF %Version%==1.14.4 SET For=4 & GOTO MAKE
 
-else goto WS
+:: 1.15.X:: VERSION:: MAPPING:: 
+IF %Version%==1.15 SET For=5 & GOTO MAKE
+IF %Version%==1.15.1 SET For=5 & GOTO MAKE
+IF %Version%==1.15.2 SET For=5 & GOTO MAKE
+
+:: 1.16.X:: VERSION:: MAPPING:: 
+IF %Version%==1.16 SET For=6 & GOTO MAKE
+IF %Version%==1.16.1 SET For=6 & GOTO MAKE
+IF %Version%==1.16.2 SET For=6 & GOTO MAKE
+IF %Version%==1.16.3 SET For=6 & GOTO MAKE
+IF %Version%==1.16.4 SET For=6 & GOTO MAKE
+IF %Version%==1.16.5 SET For=6 & GOTO MAKE
+
+:: 1.17.X:: VERSION:: MAPPING:: 
+IF %Version%==1.17 SET For=7 & GOTO MAKE
+IF %Version%==1.17.1 SET For=7 & GOTO MAKE
+
+:: 1.18.X:: VERSION:: MAPPING:: 
+IF %Version%==1.18 SET For=8 & GOTO MAKE
+IF %Version%==1.18.1 SET For=8 & GOTO MAKE
+IF %Version%==1.18.2 SET For=8 & GOTO MAKE
+
+:: 1.19.X:: VERSION:: MAPPING:: 
+IF %Version%==1.19 SET For=9 & GOTO MAKE
+IF %Version%==1.19.1 SET For=9 & GOTO MAKE
+IF %Version%==1.19.2 SET For=9 & GOTO MAKE
+
+
+
+
+goto WS
 :WS
 echo )SELECTED(invalid or unsupported version
-echo example 1.7.2 , 1.10.2, 1.14.1,.....
+dir /AD /B %mcdir%\versions\
 set /p Version=Version: 
 
 :MAKE
@@ -151,8 +200,8 @@ echo Now its time for Icon
 echo .
 echo do you want edit it
 set /p Icon=(y/n):
-IF %Icon%==y echo after editing done save and close editor & mspaint pack.png & pause & echo edited & GOTO SUBFOLDERS
-IF %Icon%==Y echo after editing done save and close editor & mspaint pack.png & pause & echo edited & GOTO SUBFOLDERS
+IF %Icon%==y echo after editing done save and close editor & %editor% pack.png & pause & echo edited & GOTO SUBFOLDERS
+IF %Icon%==Y echo after editing done save and close editor & %editor% pack.png & pause & echo edited & GOTO SUBFOLDERS
 IF %Icon%==n GOTO SUBFOLDERS
 IF %Icon%==N GOTO SUBFOLDERS
 
